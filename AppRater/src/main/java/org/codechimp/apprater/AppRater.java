@@ -91,9 +91,6 @@ public class AppRater {
     private final static String PREF_APP_VERSION_NAME = "app_version_name";
     private final static String PREF_APP_VERSION_CODE = "app_version_code";
 
-    private final static int DAYS_UNTIL_PROMPT = 3;
-    private final static int LAUNCHES_UNTIL_PROMPT = 7;
-
     private int daysUntilPromptForRemindLater = 3;
     private int launchesUntilPromptForRemindLater = 7;
 
@@ -187,24 +184,7 @@ public class AppRater {
      *
      */
     public void appLaunched() {
-        appLaunched(DAYS_UNTIL_PROMPT, LAUNCHES_UNTIL_PROMPT);
-    }
-
-    /**
-     * Call this method at the end of your OnCreate method to determine whether
-     * to show the rate prompt using the specified or default day, launch count
-     * values with additional day and launch parameter for remind me later option
-     * and checking if the version is changed or not
-     *
-     * @param daysUntilPrompt
-     * @param launchesUntilPrompt
-     * @param daysForRemind
-     * @param launchesForRemind
-     */
-    public void appLaunched(int daysUntilPrompt, int launchesUntilPrompt, int daysForRemind, int launchesForRemind) {
-        setNumDaysForRemindLater(daysForRemind);
-        setNumLaunchesForRemindLater(launchesForRemind);
-        appLaunched(daysUntilPrompt, launchesUntilPrompt);
+        appLaunched(this.daysUntilPromptForRemindLater, this.launchesUntilPromptForRemindLater);
     }
 
     /**
@@ -427,7 +407,7 @@ public class AppRater {
 
     private String getNeutralButtonTitle() {
         if (this.neutralButtonTitle == null) {
-            return this.context.getString(R.string.no_thanks);
+            return this.context.getString(R.string.later);
         }
         return this.neutralButtonTitle;
     }
