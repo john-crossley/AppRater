@@ -3,7 +3,6 @@ package org.codechimp.apprater;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -14,10 +13,61 @@ import android.util.Log;
 
 public class AppRater {
 
-    public interface AppRaterDialogCallbackDelegate {
-        void positiveButtonClicked();
-        void neutralButtonClicked();
-        void negativeButtonClicked();
+    public static class Builder {
+
+        private String title;
+        private String message;
+        private String negativeButtonTitle;
+        private String neutralButtonTitle;
+        private String positiveButtonTitle;
+        private AppRaterDialogCallbackDelegate delegate;
+        private String packageName;
+
+        public Builder setTitle(String title) {
+            this.title = title;
+            return this;
+        }
+
+        public Builder setMessage(String message) {
+            this.message = message;
+            return this;
+        }
+
+        public Builder setPositiveButtonTitle(String positiveButtonTitle) {
+            this.positiveButtonTitle = positiveButtonTitle;
+            return this;
+        }
+
+        public Builder setNeutralButtonTitle(String neutralButtonTitle) {
+            this.neutralButtonTitle = neutralButtonTitle;
+            return this;
+        }
+
+        public Builder setNegativeButtonTitle(String negativeButtonTitle) {
+            this.negativeButtonTitle = negativeButtonTitle;
+            return this;
+        }
+
+        public Builder setCallbackDialogButtonDelegate(AppRaterDialogCallbackDelegate delegate) {
+            this.delegate = delegate;
+            return this;
+        }
+
+        public void setPackageName(String packageName) {
+            this.packageName = packageName;
+        }
+
+        public AppRater build(Context context) {
+            AppRater appRater = new AppRater(context, this.delegate);
+            appRater.setTitle(this.title);
+            appRater.setMessage(this.message);
+            appRater.setPositiveButtonTitle(this.positiveButtonTitle);
+            appRater.setNeutralButtonTitle(this.neutralButtonTitle);
+            appRater.setNegativeButtonTitle(this.negativeButtonTitle);
+            appRater.setPackageName(this.packageName);
+
+            return appRater;
+        }
     }
 
     // Preference Constants
@@ -43,12 +93,15 @@ public class AppRater {
     private boolean isVersionNameCheckEnabled;
     private boolean isVersionCodeCheckEnabled;
     private boolean isCancelable = true;
-
     private String packageName;
-
     private Market market = new GoogleMarket();
-
     private AppRaterDialogCallbackDelegate delegate;
+
+    private String title;
+    private String message;
+    private String negativeButtonTitle;
+    private String neutralButtonTitle;
+    private String positiveButtonTitle;
 
     public AppRater(Context context) {
         this(context, null);
@@ -262,20 +315,20 @@ public class AppRater {
      */
     @SuppressLint("NewApi")
     private void showRateAlertDialog(final Context context, final SharedPreferences.Editor editor) {
-        Builder builder;
+        AlertDialog.Builder builder;
         if (Build.VERSION.SDK_INT >= 11 && themeSet) {
             builder = new AlertDialog.Builder(context, (isDark ? AlertDialog.THEME_HOLO_DARK : AlertDialog.THEME_HOLO_LIGHT));
         } else {
             builder = new AlertDialog.Builder(context);
         }
-        ApplicationRatingInfo ratingInfo = ApplicationRatingInfo.createApplicationInfo(context);
-        builder.setTitle(String.format(context.getString(R.string.dialog_title), ratingInfo.getApplicationName()));
 
-        builder.setMessage(context.getString(R.string.rate_message));
+        builder.setTitle(this.getTitle());
+
+        builder.setMessage(this.getMessage());
 
         builder.setCancelable(isCancelable);
 
-        builder.setPositiveButton(context.getString(R.string.rate),
+        builder.setPositiveButton(this.getPositiveButtonTitle(),
             new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     rateNow();
@@ -290,7 +343,7 @@ public class AppRater {
                 }
             });
 
-        builder.setNeutralButton(context.getString(R.string.later),
+        builder.setNeutralButton(this.getNeutralButtonTitle(),
             new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     if (editor != null) {
@@ -308,7 +361,7 @@ public class AppRater {
                 }
             });
         if (!hideNoButton) {
-            builder.setNegativeButton(context.getString(R.string.no_thanks),
+            builder.setNegativeButton(this.getNegativeButtonTitle(),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         if (editor != null) {
@@ -347,5 +400,61 @@ public class AppRater {
         long date_firstLaunch = System.currentTimeMillis();
         editor.putLong(PREF_FIRST_LAUNCHED, date_firstLaunch);
         commitOrApply(editor);
+    }
+
+    private String getPositiveButtonTitle() {
+        if (this.positiveButtonTitle == null) {
+            return context.getString(R.string.rate);
+        }
+        return this.positiveButtonTitle;
+    }
+
+    public void setPositiveButtonTitle(String positiveButtonTitle) {
+        this.positiveButtonTitle = positiveButtonTitle;
+    }
+
+    private String getNeutralButtonTitle() {
+        if (this.neutralButtonTitle == null) {
+            return this.context.getString(R.string.no_thanks);
+        }
+        return this.neutralButtonTitle;
+    }
+
+    public void setNeutralButtonTitle(String neutralButtonTitle) {
+        this.neutralButtonTitle = neutralButtonTitle;
+    }
+
+    private String getNegativeButtonTitle() {
+        if (this.negativeButtonTitle == null) {
+            return this.context.getString(R.string.no_thanks);
+        }
+        return this.negativeButtonTitle;
+    }
+
+    public void setNegativeButtonTitle(String negativeButtonTitle) {
+        this.negativeButtonTitle = negativeButtonTitle;
+    }
+
+    private String getMessage() {
+        if (this.message == null) {
+            return context.getString(R.string.rate_message);
+        }
+        return this.message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    private String getTitle() {
+        if (this.title == null) {
+            ApplicationRatingInfo ratingInfo = ApplicationRatingInfo.createApplicationInfo(context);
+            return String.format(this.context.getString(R.string.dialog_title), ratingInfo.getApplicationName());
+        }
+        return this.title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 }

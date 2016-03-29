@@ -2,6 +2,7 @@ package org.codechimp.appraterdemo;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -10,6 +11,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 
 import org.codechimp.apprater.AppRater;
+import org.codechimp.apprater.AppRaterDialogCallbackDelegate;
 
 public class MainActivity extends Activity {
 
@@ -28,8 +30,33 @@ public class MainActivity extends Activity {
 				
 				// This forces display of the rate prompt.
 				// It should only be used for testing purposes
-                AppRater appRater = new AppRater(v.getContext());
-				appRater.showRateDialog();
+                AppRater.Builder builder = new AppRater.Builder();
+                builder.setTitle("My Title");
+                builder.setMessage("My message, yo!");
+                builder.setPositiveButtonTitle("Positive");
+                builder.setNeutralButtonTitle("Neutral");
+                builder.setNegativeButtonTitle("Negative");
+
+                builder.setPackageName("uk.co.example");
+
+                builder.setCallbackDialogButtonDelegate(new AppRaterDialogCallbackDelegate() {
+                    @Override
+                    public void positiveButtonClicked() {
+                        Log.d("MainActivity", "positiveButtonClicked");
+                    }
+
+                    @Override
+                    public void neutralButtonClicked() {
+                        Log.d("MainActivity", "neutralButtonClicked");
+                    }
+
+                    @Override
+                    public void negativeButtonClicked() {
+                        Log.d("MainActivity", "negativeButtonClicked");
+                    }
+                });
+                AppRater appRater = builder.build(v.getContext());
+                appRater.showRateDialog();
 			}
 		});
 
@@ -39,13 +66,6 @@ public class MainActivity extends Activity {
         // Current implementations are Google Play and Amazon App Store, you can add your own by implementing Market
         // AppRater.setMarket(new GoogleMarket());
         // AppRater.setMarket(new AmazonMarket());
-
-        // This will keep a track of when the app was first used and whether to show a prompt
-		// It should be the default implementation of AppRater
-
-        AppRater appRater = new AppRater(this);
-        appRater.setPackageName("uk.co.bbc.android.sportdomestic");
-        appRater.appLaunched();
 	}
 
     @Override
