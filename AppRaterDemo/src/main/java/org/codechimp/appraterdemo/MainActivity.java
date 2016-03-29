@@ -36,7 +36,8 @@ public class MainActivity extends Activity {
                 builder.setPositiveButtonTitle("Positive");
                 builder.setNeutralButtonTitle("Neutral");
                 builder.setNegativeButtonTitle("Negative");
-
+                builder.setDaysUntilPromptForRemindLater(7);
+                builder.setLaunchesUntilPromptForRemindLater(2);
                 builder.setPackageName("uk.co.example");
 
                 builder.setCallbackDialogButtonDelegate(new AppRaterDialogCallbackDelegate() {

@@ -22,6 +22,8 @@ public class AppRater {
         private String positiveButtonTitle;
         private AppRaterDialogCallbackDelegate delegate;
         private String packageName;
+        private int daysUntilPromptForRemindLater;
+        private int launchesUntilPromptForRemindLater;
 
         public Builder setTitle(String title) {
             this.title = title;
@@ -57,6 +59,14 @@ public class AppRater {
             this.packageName = packageName;
         }
 
+        public void setDaysUntilPromptForRemindLater(int days) {
+            this.daysUntilPromptForRemindLater = days;
+        }
+
+        public void setLaunchesUntilPromptForRemindLater(int launches) {
+            this.launchesUntilPromptForRemindLater = launches;
+        }
+
         public AppRater build(Context context) {
             AppRater appRater = new AppRater(context, this.delegate);
             appRater.setTitle(this.title);
@@ -65,6 +75,8 @@ public class AppRater {
             appRater.setNeutralButtonTitle(this.neutralButtonTitle);
             appRater.setNegativeButtonTitle(this.negativeButtonTitle);
             appRater.setPackageName(this.packageName);
+            appRater.setNumDaysForRemindLater(this.daysUntilPromptForRemindLater);
+            appRater.setNumLaunchesForRemindLater(this.launchesUntilPromptForRemindLater);
 
             return appRater;
         }
