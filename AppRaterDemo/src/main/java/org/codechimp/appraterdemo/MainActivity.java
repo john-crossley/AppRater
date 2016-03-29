@@ -22,44 +22,58 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
+        AppRater.Builder builder = new AppRater.Builder();
+        builder.setTitle("My Title");
+        builder.setMessage("My message, yo!");
+        builder.setPositiveButtonTitle("Positive");
+        builder.setNeutralButtonTitle("Neutral");
+        builder.setNegativeButtonTitle("Negative");
+        builder.setDaysUntilPromptForRemindLater(7);
+        builder.setLaunchesUntilPromptForRemindLater(2);
+        builder.setPackageName("uk.co.example");
 
-        buttonTest = (Button) findViewById(R.id.button1);
+        AppRater appRater = builder.build(this);
+        appRater.appLaunched();
+
+
+//        buttonTest = (Button) findViewById(R.id.button1);
 		
-		buttonTest.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				
-				// This forces display of the rate prompt.
-				// It should only be used for testing purposes
-                AppRater.Builder builder = new AppRater.Builder();
-                builder.setTitle("My Title");
-                builder.setMessage("My message, yo!");
-                builder.setPositiveButtonTitle("Positive");
-                builder.setNeutralButtonTitle("Neutral");
-                builder.setNegativeButtonTitle("Negative");
-                builder.setDaysUntilPromptForRemindLater(7);
-                builder.setLaunchesUntilPromptForRemindLater(2);
-                builder.setPackageName("uk.co.example");
+//		buttonTest.setOnClickListener(new OnClickListener() {
+//			public void onClick(View v) {
+//
+//				// This forces display of the rate prompt.
+//				// It should only be used for testing purposes
+//                AppRater.Builder builder = new AppRater.Builder();
+//                builder.setTitle("My Title");
+//                builder.setMessage("My message, yo!");
+//                builder.setPositiveButtonTitle("Positive");
+//                builder.setNeutralButtonTitle("Neutral");
+//                builder.setNegativeButtonTitle("Negative");
+//                builder.setDaysUntilPromptForRemindLater(7);
+//                builder.setLaunchesUntilPromptForRemindLater(2);
+//                builder.setPackageName("uk.co.example");
+//
+//                builder.setCallbackDialogButtonDelegate(new AppRaterDialogCallbackDelegate() {
+//                    @Override
+//                    public void positiveButtonClicked() {
+//                        Log.d("MainActivity", "positiveButtonClicked");
+//                    }
+//
+//                    @Override
+//                    public void neutralButtonClicked() {
+//                        Log.d("MainActivity", "neutralButtonClicked");
+//                    }
+//
+//                    @Override
+//                    public void negativeButtonClicked() {
+//                        Log.d("MainActivity", "negativeButtonClicked");
+//                    }
+//                });
+//                AppRater appRater = builder.build(v.getContext());
+//                appRater.showRateDialog();
 
-                builder.setCallbackDialogButtonDelegate(new AppRaterDialogCallbackDelegate() {
-                    @Override
-                    public void positiveButtonClicked() {
-                        Log.d("MainActivity", "positiveButtonClicked");
-                    }
-
-                    @Override
-                    public void neutralButtonClicked() {
-                        Log.d("MainActivity", "neutralButtonClicked");
-                    }
-
-                    @Override
-                    public void negativeButtonClicked() {
-                        Log.d("MainActivity", "negativeButtonClicked");
-                    }
-                });
-                AppRater appRater = builder.build(v.getContext());
-                appRater.showRateDialog();
-			}
-		});
+//			}
+//		});
 
 
         // Optionally you can set the Market you want to use prior to calling appLaunched
